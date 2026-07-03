@@ -5,7 +5,7 @@ on:
     branches: [main]
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -18,12 +18,31 @@ jobs:
       - run: npm ci
       - run: npm run build
       
-      - name: Deploy to GitHub Pages
+      - name: Deploy
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist
+          
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist
+          
+      - name: Push to gh-pages
         run: |
-          cd dist
+          mkdir -p ghpages
+          cp -r dist/* ghpages/
+          cd ghpages
           git init
-          git config user.email "deploy@github.com"
+          git config user.email "actions@github.com"
           git config user.name "GitHub Actions"
-          git add -A
+          git add .
           git commit -m "Deploy to GitHub Pages"
-          git push -f https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git HEAD:gh-pages
+          git push --force https://oauth2:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git HEAD:gh-pages
