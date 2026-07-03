@@ -1,5 +1,6 @@
 import './styles.css';
 import { KrimsCodeClient } from './sdk.js';
+import logoUrl from '../logo.png';
 
 const app = document.getElementById('app');
 const client = new KrimsCodeClient();
@@ -9,7 +10,7 @@ if (app) {
     <div class="wrap">
       <header class="topbar">
         <a class="brand" href="#">
-          <img src="/logo.png" alt="Krims Code logo" />
+          <img src="${logoUrl}" alt="Krims Code logo" />
           <span>Krims Code</span>
         </a>
         <nav class="nav">
