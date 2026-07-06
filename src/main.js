@@ -17,7 +17,7 @@ if (app) {
           <a href="#platform">Platform</a>
           <a href="#workflow">Workflow</a>
           <a href="#sdk">SDK</a>
-          <a href="https://github.com/Krylo-60/krims-code-ide" target="_blank" rel="noreferrer">GitHub</a>
+          <a href="https://github.com/Krylo-60/krims-code-cli" target="_blank" rel="noreferrer">GitHub</a>
         </nav>
       </header>
 
@@ -27,7 +27,7 @@ if (app) {
           <h1>Design, debug, and ship with one calm intelligence layer.</h1>
           <p>Krims Code brings your IDE, CLI, and SDK into a single premium surface for founders, solo builders, and fast-moving teams.</p>
           <div class="actions">
-            <a class="btn primary" href="https://github.com/Krylo-60/krims-code-ide" target="_blank" rel="noreferrer">See the repo</a>
+            <a class="btn primary" href="https://github.com/Krylo-60/krims-code-cli" target="_blank" rel="noreferrer">See the repo</a>
             <a class="btn secondary" href="#platform">Explore the platform</a>
           </div>
           <ul class="stats">
@@ -160,7 +160,7 @@ if (app) {
           <p class="eyebrow">Ready to build</p>
           <h2>Bring your next product into focus.</h2>
           <p>Open the repo, run the SDK, and start shaping your own AI-native workflow.</p>
-          <a class="btn primary" href="https://github.com/Krylo-60/krims-code-ide" target="_blank" rel="noreferrer">View GitHub</a>
+          <a class="btn primary" href="https://github.com/Krylo-60/krims-code-cli" target="_blank" rel="noreferrer">View GitHub</a>
         </div>
       </section>
     </div>
