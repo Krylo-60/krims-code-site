@@ -17,6 +17,7 @@ if (app) {
           <a href="#platform">Platform</a>
           <a href="#workflow">Workflow</a>
           <a href="#sdk">SDK</a>
+          <a href="dashboard.html">Telemetry</a>
           <a href="https://github.com/Krylo-60/krims-code-cli" target="_blank" rel="noreferrer">GitHub</a>
         </nav>
       </header>
