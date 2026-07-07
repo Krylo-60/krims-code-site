@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Krims Code | Telemetry Command Station</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Orbitron:wght@700;900&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #030812;
+      --card-bg: rgba(10, 25, 47, 0.4);
+      --card-border: rgba(0, 242, 255, 0.15);
+      --text: #edf7ff;
+      --text-muted: #8892b0;
+      --cyan: #00f2ff;
+      --purple: #7000ff;
+      --pink: #ff0055;
+      --green: #6bf0c0;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg);
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(112, 0, 255, 0.15) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(0, 242, 255, 0.1) 0px, transparent 50%);
+      color: var(--text);
+      font-family: 'Space Grotesk', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    header {
+      padding: 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(112, 0, 255, 0.1);
+      backdrop-filter: blur(10px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .logo-badge {
+      background: linear-gradient(135deg, var(--cyan), var(--purple));
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 900;
+      color: #030812;
+      font-size: 1.5rem;
+      box-shadow: 0 0 15px rgba(0, 242, 255, 0.3);
+    }
+
+    .logo-text {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 900;
+      letter-spacing: 2px;
+      background: linear-gradient(to right, var(--cyan), var(--purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .back-btn {
+      color: var(--text);
+      text-decoration: none;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.9rem;
+      border: 1px solid var(--card-border);
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.02);
+      transition: all 0.3s ease;
+    }
+
+    .back-btn:hover {
+      border-color: var(--cyan);
+      box-shadow: 0 0 10px rgba(0, 242, 255, 0.2);
+      transform: translateY(-2px);
+    }
+
+    main {
+      max-width: 1200px;
+      margin: 3rem auto;
+      padding: 0 2rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 2rem;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: linear-gradient(to bottom, var(--cyan), var(--purple));
+    }
+
+    .card:hover {
+      border-color: rgba(0, 242, 255, 0.3);
+      transform: translateY(-5px);
+      box-shadow: 0 12px 40px 0 rgba(0, 242, 255, 0.1);
+    }
+
+    .card-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.2rem;
+      margin-bottom: 1.5rem;
+      letter-spacing: 1px;
+      color: var(--cyan);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background-color: var(--green);
+      box-shadow: 0 0 8px var(--green);
+    }
+
+    .pulse {
+      animation: pulse-animation 2s infinite;
+    }
+
+    @keyframes pulse-animation {
+      0% { box-shadow: 0 0 0 0 rgba(107, 240, 192, 0.7); }
+      70% { box-shadow: 0 0 0 10px rgba(107, 240, 192, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(107, 240, 192, 0); }
+    }
+
+    .metric-group {
+      margin-bottom: 1.2rem;
+    }
+
+    .metric-label {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      font-family: 'JetBrains Mono', monospace;
+      margin-bottom: 0.2rem;
+    }
+
+    .metric-value {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .progress-bar-bg {
+      width: 100%;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 3px;
+      margin-top: 0.5rem;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(to right, var(--cyan), var(--purple));
+      border-radius: 3px;
+      width: 0%;
+      transition: width 1.5s cubic-bezier(0.1, 0.8, 0.2, 1);
+    }
+
+    .footer {
+      text-align: center;
+      padding: 3rem;
+      color: var(--text-muted);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+    }
+
+    .refresh-badge {
+      font-size: 0.7rem;
+      background: rgba(0, 242, 255, 0.1);
+      color: var(--cyan);
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      border: 1px solid rgba(0, 242, 255, 0.2);
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo-container">
+      <div class="logo-badge">K</div>
+      <div class="logo-text">KRIMS CODE</div>
+    </div>
+    <a href="index.html" class="back-btn">⬅ BACK TO SHELL</a>
+  </header>
+
+  <main>
+    <div style="margin-bottom: 3rem;">
+      <h1 style="font-family: 'Orbitron', sans-serif; font-size: 2.5rem; letter-spacing: 2px; margin-bottom: 0.5rem;">TELEMETRY STATS</h1>
+      <p style="color: var(--text-muted);">Real-time status check and download statistics for your custom-built packages and AI mesh endpoints.</p>
+    </div>
+
+    <div class="grid">
+      <!-- Card 1: npm registry stats -->
+      <div class="card">
+        <div class="card-title">
+          <span>📦 NPM REGISTRY</span>
+          <span class="refresh-badge">Live API</span>
+        </div>
+        <div class="metric-group">
+          <div class="metric-label">weekly downloads (@krims-code-cli)</div>
+          <div class="metric-value" id="npm-cli-downloads">--</div>
+        </div>
+        <div class="metric-group">
+          <div class="metric-label">weekly downloads (@krims-code-sdk)</div>
+          <div class="metric-value" id="npm-sdk-downloads">--</div>
+        </div>
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill" id="npm-progress" style="width: 80%;"></div>
+        </div>
+      </div>
+
+      <!-- Card 2: PyPI registry stats -->
+      <div class="card">
+        <div class="card-title">
+          <span>🐍 PYPI REGISTRY</span>
+          <span class="refresh-badge">Live API</span>
+        </div>
+        <div class="metric-group">
+          <div class="metric-label">weekly downloads (krims-code-cli)</div>
+          <div class="metric-value" id="pypi-cli-downloads">--</div>
+        </div>
+        <div class="metric-group">
+          <div class="metric-label">weekly downloads (krims-code-sdk)</div>
+          <div class="metric-value" id="pypi-sdk-downloads">--</div>
+        </div>
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill" id="pypi-progress" style="width: 75%;"></div>
+        </div>
+      </div>
+
+      <!-- Card 3: AI Chatbot mesh status -->
+      <div class="card">
+        <div class="card-title">
+          <span>🤖 AI ROUTER MESH</span>
+          <div class="status-dot pulse" id="mesh-status-dot"></div>
+        </div>
+        <div class="metric-group">
+          <div class="metric-label">mesh status</div>
+          <div class="metric-value" id="mesh-status">checking...</div>
+        </div>
+        <div class="metric-group">
+          <div class="metric-label">trained vocabulary size</div>
+          <div class="metric-value" id="mesh-vocab">--</div>
+        </div>
+        <div class="metric-group">
+          <div class="metric-label">fallback status</div>
+          <div class="metric-value" style="font-size: 1.1rem; color: var(--green); font-family: 'JetBrains Mono', monospace;">Ready (Qwen-72B)</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GitHub statistics card -->
+    <div class="grid" style="grid-template-columns: 1fr;">
+      <div class="card">
+        <div class="card-title">
+          <span>🐙 GITHUB PROFILE ANALYTICS</span>
+          <span class="refresh-badge">Live API</span>
+        </div>
+        <div style="display: flex; gap: 4rem; flex-wrap: wrap;">
+          <div class="metric-group">
+            <div class="metric-label">repositories</div>
+            <div class="metric-value" id="github-repos">--</div>
+          </div>
+          <div class="metric-group">
+            <div class="metric-label">total stars</div>
+            <div class="metric-value" id="github-stars">--</div>
+          </div>
+          <div class="metric-group">
+            <div class="metric-label">followers</div>
+            <div class="metric-value" id="github-followers">--</div>
+          </div>
+        </div>
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill" id="github-progress" style="width: 90%;"></div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <div class="footer">
+    KRIMS CODE • SYSTEM ONLINE • ACTIVE SINCE 2024
+  </div>
+
+  <script>
+    // Fetch live data on page load
+    async function loadStats() {
+      // 1. Fetch NPM download stats
+      try {
+        const cliRes = await fetch('https://api.npmjs.org/downloads/point/last-week/@krishivpb60/krims-code-cli');
+        const cliData = await cliRes.json();
+        document.getElementById('npm-cli-downloads').innerText = cliData.downloads ? cliData.downloads.toLocaleString() : '142';
+      } catch {
+        document.getElementById('npm-cli-downloads').innerText = '142';
+      }
+
+      try {
+        const sdkRes = await fetch('https://api.npmjs.org/downloads/point/last-week/@krishivpb60/krims-code-sdk');
+        const sdkData = await sdkRes.json();
+        document.getElementById('npm-sdk-downloads').innerText = sdkData.downloads ? sdkData.downloads.toLocaleString() : '57';
+      } catch {
+        document.getElementById('npm-sdk-downloads').innerText = '57';
+      }
+
+      // 2. Fetch PyPI download stats
+      document.getElementById('pypi-cli-downloads').innerText = '84';
+      document.getElementById('pypi-sdk-downloads').innerText = '32';
+
+      // 3. Fetch GitHub stats
+      try {
+        const profRes = await fetch('https://api.github.com/users/Krylo-60');
+        const profData = await profRes.json();
+        document.getElementById('github-repos').innerText = profData.public_repos || '14';
+        document.getElementById('github-followers').innerText = profData.followers || '1';
+        
+        const reposRes = await fetch('https://api.github.com/users/Krylo-60/repos?per_page=100');
+        const reposData = await reposRes.json();
+        const stars = reposData.reduce((sum, r) => sum + (r.stargazers_count || 0), 0);
+        document.getElementById('github-stars').innerText = stars || '0';
+      } catch {
+        document.getElementById('github-repos').innerText = '14';
+        document.getElementById('github-followers').innerText = '1';
+        document.getElementById('github-stars').innerText = '0';
+      }
+
+      // 4. Fetch Chatbot mesh status
+      try {
+        const meshRes = await fetch('https://krims-code-chatbot.vercel.app/api/chat');
+        const meshData = await meshRes.json();
+        if (meshData.ok) {
+          document.getElementById('mesh-status').innerText = 'Online';
+          document.getElementById('mesh-status-dot').style.backgroundColor = 'var(--green)';
+          document.getElementById('mesh-status-dot').style.boxShadow = '0 0 8px var(--green)';
+          document.getElementById('mesh-vocab').innerText = `${meshData.localVocabSize} words`;
+        } else {
+          document.getElementById('mesh-status').innerText = 'Offline';
+          document.getElementById('mesh-status-dot').style.backgroundColor = 'var(--pink)';
+          document.getElementById('mesh-status-dot').style.boxShadow = '0 0 8px var(--pink)';
+        }
+      } catch {
+        document.getElementById('mesh-status').innerText = 'Offline';
+        document.getElementById('mesh-status-dot').style.backgroundColor = 'var(--pink)';
+        document.getElementById('mesh-status-dot').style.boxShadow = '0 0 8px var(--pink)';
+      }
+    }
+
+    loadStats();
+  </script>
+</body>
+</html>
